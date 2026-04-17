@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import {
     Plus, Star, MapPin, Eye, Edit3, Trash2,
     TrendingUp, Home, Users, Calendar, MoreHorizontal,
@@ -46,9 +46,7 @@ const SellerPanel = ({ user }) => {
     const fetchSellerData = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('http://127.0.0.1:5000/api/stats/seller', {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const res = await api.get('/api/stats/seller');
             setListings(res.data.properties || []);
         } catch (err) { console.error(err); }
         finally { setLoading(false); }
@@ -57,9 +55,7 @@ const SellerPanel = ({ user }) => {
     const fetchConversations = async () => {
         setConvsLoading(true);
         try {
-            const res = await axios.get('http://127.0.0.1:5000/api/messages', {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const res = await api.get('/api/messages');
             setConversations(res.data);
         } catch (err) { console.error(err); }
         finally { setConvsLoading(false); }
@@ -67,9 +63,7 @@ const SellerPanel = ({ user }) => {
 
     const fetchMessages = async (userId) => {
         try {
-            const res = await axios.get(`http://127.0.0.1:5000/api/messages/${userId}`, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const res = await api.get(`/api/messages/${userId}`);
             setMessages(res.data);
         } catch (err) { console.error(err); }
     };
@@ -79,11 +73,9 @@ const SellerPanel = ({ user }) => {
         if (!newMessage.trim() || !selectedChat) return;
 
         try {
-            const res = await axios.post('http://127.0.0.1:5000/api/messages', {
+            const res = await api.post('/api/messages', {
                 receiverId: selectedChat._id,
                 content: newMessage
-            }, {
-                headers: { Authorization: `Bearer ${user.token}` }
             });
             setMessages([...messages, res.data]);
             setNewMessage('');
@@ -94,9 +86,7 @@ const SellerPanel = ({ user }) => {
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this listing?')) return;
         try {
-            await axios.delete(`http://127.0.0.1:5000/api/properties/${id}`, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            await api.delete(`/api/properties/${id}`);
             setListings(prev => prev.filter(p => p._id !== id));
         } catch (err) { console.error(err); }
     };

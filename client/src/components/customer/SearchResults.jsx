@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/api';
 import {
     Search, Navigation, Filter, MapPin, Star,
     ArrowRight, Grid, Map as MapIcon, Info,
@@ -79,7 +79,7 @@ const SearchResults = ({ user }) => {
                     setProperties(cache.get('properties'));
                     trackCache(true);
                 } else {
-                    const res = await axios.get('http://127.0.0.1:5000/api/properties');
+                    const res = await api.get('/api/properties');
                     setProperties(res.data);
                     if (cache) cache.set('properties', res.data);
                     trackCache(false);
@@ -122,12 +122,10 @@ const SearchResults = ({ user }) => {
     const calculatePath = async (startId, endId) => {
         setPathLoading(true);
         try {
-            const { data } = await axios.post('http://127.0.0.1:5000/api/properties/path', {
+            const { data } = await api.post('/api/properties/path', {
                 startId,
                 endId,
                 algorithm
-            }, {
-                headers: { Authorization: `Bearer ${user?.token}` }
             });
             setPathResult(data);
         } catch (err) {

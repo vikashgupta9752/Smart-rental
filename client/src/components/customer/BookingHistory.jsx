@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/api';
 import {
     Calendar, CheckCircle2, XCircle, Clock, FileText,
     Download, Filter, Loader2, Star, Search,
@@ -20,9 +20,7 @@ const BookingHistory = ({ user }) => {
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const res = await axios.get('http://127.0.0.1:5000/api/stats/customer', {
-                    headers: { Authorization: `Bearer ${user.token}` }
-                });
+                const res = await api.get('/api/stats/customer');
                 setBookings(res.data.bookings || []);
                 setStats({
                     totalHours: res.data.totalHours || 0,

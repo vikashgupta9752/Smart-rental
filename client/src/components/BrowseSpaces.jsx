@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import SearchBar from './search/SearchBar';
 import FilterBar from './search/FilterBar';
@@ -40,7 +40,7 @@ const BrowseSpaces = () => {
             if (filters.amenities?.length) params.amenities = filters.amenities.join(',');
             if (filters.sort) params.sort = filters.sort;
 
-            const { data } = await axios.get('http://127.0.0.1:5000/api/properties', { params });
+            const { data } = await api.get('/api/properties', { params });
             setProperties(data);
         } catch (err) { console.error(err); }
         finally { setLoading(false); }
@@ -52,9 +52,7 @@ const BrowseSpaces = () => {
         const user = JSON.parse(saved);
         if (!user.token) return;
         try {
-            const { data } = await axios.get('http://127.0.0.1:5000/api/wishlist', {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const { data } = await api.get('/api/wishlist');
             setWishlistIds(data.map(p => p._id));
         } catch (e) { }
     }, []);
@@ -82,9 +80,7 @@ const BrowseSpaces = () => {
         if (!saved) return;
         const user = JSON.parse(saved);
         try {
-            const { data } = await axios.post(`http://127.0.0.1:5000/api/wishlist/${propertyId}`, {}, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const { data } = await api.post(`/api/wishlist/${propertyId}`);
             setWishlistIds(prev => data.wishlisted ? [...prev, propertyId] : prev.filter(id => id !== propertyId));
         } catch (e) { }
     };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/api';
 import {
     Sparkles, MapPin, Loader2, Zap,
     TrendingUp, ChevronRight,
@@ -18,7 +18,7 @@ const Recommendations = ({ user }) => {
     useEffect(() => {
         const fetchRecommendations = async () => {
             try {
-                const res = await axios.get('http://127.0.0.1:5000/api/properties');
+                const res = await api.get('/api/properties');
                 const allProps = res.data;
                 setTotalProperties(allProps.length);
 

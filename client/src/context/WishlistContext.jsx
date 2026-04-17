@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 
 const WishlistContext = createContext();
 
@@ -11,9 +11,7 @@ export const WishlistProvider = ({ user, children }) => {
         if (!user?.token) { setWishlist([]); return; }
         try {
             setLoading(true);
-            const { data } = await axios.get('http://127.0.0.1:5000/api/wishlist', {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const { data } = await api.get('/api/wishlist');
             setWishlist(data);
         } catch (err) { console.error('Wishlist fetch error:', err); }
         finally { setLoading(false); }
@@ -24,9 +22,7 @@ export const WishlistProvider = ({ user, children }) => {
     const toggleWishlist = async (propertyId) => {
         if (!user?.token) return;
         try {
-            const { data } = await axios.post(`http://127.0.0.1:5000/api/wishlist/${propertyId}`, {}, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const { data } = await api.post(`/api/wishlist/${propertyId}`);
             if (data.wishlisted) {
                 fetchWishlist();
             } else {

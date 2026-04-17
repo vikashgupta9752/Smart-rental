@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { Star, ChevronLeft, ChevronRight, ArrowRight, Sparkles, Shield, Zap, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -61,7 +61,7 @@ const Home = () => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const { data } = await axios.get('http://127.0.0.1:5000/api/properties');
+                const { data } = await api.get('/api/properties');
                 setProperties(data);
             } catch (err) { console.error(err); }
             finally { setLoading(false); }
@@ -73,9 +73,7 @@ const Home = () => {
             const user = JSON.parse(saved);
             if (!user.token) return;
             try {
-                const { data } = await axios.get('http://127.0.0.1:5000/api/wishlist', {
-                    headers: { Authorization: `Bearer ${user.token}` }
-                });
+                const { data } = await api.get('/api/wishlist');
                 setWishlistIds(data.map(p => p._id));
             } catch (e) { }
         };
@@ -88,9 +86,7 @@ const Home = () => {
         if (!saved) return;
         const user = JSON.parse(saved);
         try {
-            const { data } = await axios.post(`http://127.0.0.1:5000/api/wishlist/${propertyId}`, {}, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const { data } = await api.post(`/api/wishlist/${propertyId}`);
             setWishlistIds(prev => data.wishlisted ? [...prev, propertyId] : prev.filter(id => id !== propertyId));
         } catch (e) { }
     };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/api';
 import MapView from '../common/MapView';
 import {
     Star, MapPin, Heart, Share, ChevronLeft, ChevronRight, X,
@@ -51,24 +51,22 @@ const PropertyDetail = ({ user }) => {
         try {
             setLoading(true);
             const [propRes, revRes] = await Promise.all([
-                axios.get(`http://127.0.0.1:5000/api/properties/${id}`),
-                axios.get(`http://127.0.0.1:5000/api/reviews/${id}`)
+                api.get(`/api/properties/${id}`),
+                api.get(`/api/reviews/${id}`)
             ]);
             setProperty(propRes.data);
             setReviews(revRes.data);
 
             // Check availability
             try {
-                const availRes = await axios.get(`http://127.0.0.1:5000/api/bookings/availability/${id}`);
+                const availRes = await api.get(`/api/bookings/availability/${id}`);
                 setBookedDates(availRes.data);
             } catch (e) { }
 
             // Check wishlist
             if (user?.token) {
                 try {
-                    const wRes = await axios.get('http://127.0.0.1:5000/api/wishlist', {
-                        headers: { Authorization: `Bearer ${user.token}` }
-                    });
+                    const wRes = await api.get('/api/wishlist');
                     setIsWishlisted(wRes.data.some(p => p._id === id));
                 } catch (e) { }
             }
@@ -86,12 +84,10 @@ const PropertyDetail = ({ user }) => {
 
         setSendingMessage(true);
         try {
-            await axios.post('http://127.0.0.1:5000/api/messages', {
+            await api.post('/api/messages', {
                 receiverId: property.owner._id,
                 content: messageContent,
                 propertyId: property._id
-            }, {
-                headers: { Authorization: `Bearer ${user.token}` }
             });
             setMessageSent(true);
             setMessageContent('');
@@ -114,9 +110,7 @@ const PropertyDetail = ({ user }) => {
     const toggleWishlist = async () => {
         if (!user?.token) return;
         try {
-            const { data } = await axios.post(`http://127.0.0.1:5000/api/wishlist/${id}`, {}, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const { data } = await api.post(`/api/wishlist/${id}`);
             setIsWishlisted(data.wishlisted);
         } catch (e) { }
     };
@@ -141,9 +135,9 @@ const PropertyDetail = ({ user }) => {
         setBookingLoading(true);
         setBookingMsg(null);
         try {
-            await axios.post('http://127.0.0.1:5000/api/bookings', {
+            await api.post('/api/bookings', {
                 propertyId: id, checkIn, checkOut, guests
-            }, { headers: { Authorization: `Bearer ${user.token}` } });
+            });
             setBookingMsg({ type: 'success', text: 'Booking confirmed! 🎉' });
             setShowPaymentModal(false);
             setPaymentId('');
@@ -159,9 +153,9 @@ const PropertyDetail = ({ user }) => {
         if (!user?.token) return;
         setReviewLoading(true);
         try {
-            await axios.post('http://127.0.0.1:5000/api/reviews', {
+            await api.post('/api/reviews', {
                 propertyId: id, rating: reviewRating, comment: reviewText
-            }, { headers: { Authorization: `Bearer ${user.token}` } });
+            });
             setReviewText('');
             setReviewRating(5);
             fetchProperty();

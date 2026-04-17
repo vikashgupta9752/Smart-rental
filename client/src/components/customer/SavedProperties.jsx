@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../../api/api';
 import { Heart, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import PropertyCard from '../property/PropertyCard';
@@ -12,9 +12,7 @@ const SavedProperties = ({ user }) => {
         if (!user?.token) return;
         try {
             setLoading(true);
-            const { data } = await axios.get('http://127.0.0.1:5000/api/wishlist', {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const { data } = await api.get('/api/wishlist');
             setWishlist(data);
         } catch (err) { console.error(err); }
         finally { setLoading(false); }
@@ -24,9 +22,7 @@ const SavedProperties = ({ user }) => {
 
     const toggleWishlist = async (propertyId) => {
         try {
-            await axios.post(`http://127.0.0.1:5000/api/wishlist/${propertyId}`, {}, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            await api.post(`/api/wishlist/${propertyId}`);
             setWishlist(prev => prev.filter(p => p._id !== propertyId));
         } catch (err) { console.error(err); }
     };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import {
     Home, IndianRupee, Calendar, Star, Users,
     TrendingUp, MapPin, Clock, MessageCircle,
@@ -40,12 +40,11 @@ const AdminPanel = ({ user }) => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const headers = { Authorization: `Bearer ${user.token}` };
             const [propRes, statsRes, reportsRes, announceRes] = await Promise.all([
-                axios.get('http://127.0.0.1:5000/api/properties', { headers }),
-                axios.get('http://127.0.0.1:5000/api/stats/admin', { headers }),
-                axios.get('http://127.0.0.1:5000/api/reports', { headers }),
-                axios.get('http://127.0.0.1:5000/api/announcements', { headers })
+                api.get('/api/properties'),
+                api.get('/api/stats/admin'),
+                api.get('/api/reports'),
+                api.get('/api/announcements')
             ]);
 
             const allProps = propRes.data || [];
@@ -61,9 +60,7 @@ const AdminPanel = ({ user }) => {
     const handleUpdateBookingStatus = async (bookingId, status) => {
         setStatusUpdating(bookingId);
         try {
-            await axios.put(`http://127.0.0.1:5000/api/bookings/${bookingId}/status`, { status }, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            await api.put(`/api/bookings/${bookingId}/status`, { status });
             fetchData();
         } catch (err) {
             console.error(err);
@@ -111,9 +108,7 @@ const AdminPanel = ({ user }) => {
                     address: editForm.address,
                 },
             };
-            await axios.put(`http://127.0.0.1:5000/api/properties/${editingProperty._id}`, updateData, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            await api.put(`/api/properties/${editingProperty._id}`, updateData);
             setEditingProperty(null);
             fetchData();
         } catch (err) { console.error(err); alert('Failed to save changes'); }
@@ -123,9 +118,7 @@ const AdminPanel = ({ user }) => {
     const handleDelete = async (id) => {
         if (!window.confirm('Delete this property permanently?')) return;
         try {
-            await axios.delete(`http://127.0.0.1:5000/api/properties/${id}`, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            await api.delete(`/api/properties/${id}`);
             setDeleteConfirm(null);
             fetchData();
         } catch (err) { console.error(err); alert('Failed to delete property'); }
@@ -133,20 +126,16 @@ const AdminPanel = ({ user }) => {
 
     const handleVerifyProperty = async (id, status) => {
         try {
-            await axios.put(`http://127.0.0.1:5000/api/properties/${id}/verify`, { status }, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            await api.put(`/api/properties/${id}/verify`, { status });
             fetchData();
         } catch (err) { console.error(err); alert('Failed to verify property'); }
     };
 
     const handleResolveReport = async (reportId, status, notes = '') => {
         try {
-            await axios.put(`http://127.0.0.1:5000/api/reports/${reportId}/resolve`, {
+            await api.put(`/api/reports/${reportId}/resolve`, {
                 status,
                 resolutionNotes: notes
-            }, {
-                headers: { Authorization: `Bearer ${user.token}` }
             });
             fetchData();
             setResolvingReport(null);
@@ -156,9 +145,7 @@ const AdminPanel = ({ user }) => {
     const handleCreateAnnouncement = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://127.0.0.1:5000/api/announcements', newAnnouncement, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            await api.post('/api/announcements', newAnnouncement);
             setNewAnnouncement({ title: '', content: '', type: 'info' });
             fetchData();
         } catch (err) { console.error(err); alert('Failed to create announcement'); }
@@ -166,18 +153,14 @@ const AdminPanel = ({ user }) => {
 
     const handleDeleteAnnouncement = async (id) => {
         try {
-            await axios.delete(`http://127.0.0.1:5000/api/announcements/${id}`, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            await api.delete(`/api/announcements/${id}`);
             fetchData();
         } catch (err) { console.error(err); alert('Failed to delete announcement'); }
     };
 
     const handleToggleAnnouncement = async (id, isActive) => {
         try {
-            await axios.put(`http://127.0.0.1:5000/api/announcements/${id}`, { isActive }, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            await api.put(`/api/announcements/${id}`, { isActive });
             fetchData();
         } catch (err) { console.error(err); alert('Toggle failed'); }
     };
@@ -249,9 +232,7 @@ const AdminPanel = ({ user }) => {
     const fetchUsers = async () => {
         setUserLoading(true);
         try {
-            const res = await axios.get('http://127.0.0.1:5000/api/users', {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const res = await api.get('/api/users');
             setUsers(res.data);
         } catch (err) { console.error(err); }
         finally { setUserLoading(false); }
@@ -263,13 +244,12 @@ const AdminPanel = ({ user }) => {
 
     const handleUserAction = async (userId, action, data = {}) => {
         try {
-            const headers = { Authorization: `Bearer ${user.token}` };
             if (action === 'verify') {
-                await axios.put(`http://127.0.0.1:5000/api/users/${userId}/verify`, data, { headers });
+                await api.put(`/api/users/${userId}/verify`, data);
             } else if (action === 'block') {
-                await axios.put(`http://127.0.0.1:5000/api/users/${userId}/block`, {}, { headers });
+                await api.put(`/api/users/${userId}/block`);
             } else if (action === 'flag') {
-                await axios.put(`http://127.0.0.1:5000/api/users/${userId}/flag`, {}, { headers });
+                await api.put(`/api/users/${userId}/flag`);
             }
             fetchUsers();
         } catch (err) { console.error(err); alert('Action failed'); }

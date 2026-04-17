@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Eye, EyeOff, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,9 +16,9 @@ const Login = ({ setUser }) => {
         e.preventDefault();
         setError('');
         setLoading(true);
-        const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
         try {
-            const { data } = await axios.post(`http://127.0.0.1:5000${endpoint}`, formData);
+            const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
+            const { data } = await api.post(endpoint, formData);
             localStorage.setItem('user', JSON.stringify(data));
             setUser(data);
             if (data.role === 'admin') navigate('/admin');

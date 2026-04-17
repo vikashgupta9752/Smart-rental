@@ -10,7 +10,7 @@ import {
 import { useNotifications } from '../context/NotificationContext';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
+import api from '../api/api';
 import { AlertCircle } from 'lucide-react';
 
 const Sidebar = ({ user, logout }) => {
@@ -24,7 +24,7 @@ const Sidebar = ({ user, logout }) => {
     React.useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const res = await axios.get('http://127.0.0.1:5000/api/announcements/active');
+                const res = await api.get('/api/announcements/active');
                 setAnnouncements(res.data || []);
             } catch (err) { console.error(err); }
         };

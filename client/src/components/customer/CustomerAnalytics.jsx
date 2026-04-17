@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/api';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { TrendingUp, Calendar, CreditCard, Award, Loader2, MapPin, Clock, BarChart3, ArrowUpRight, PieChart } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -12,9 +12,7 @@ const CustomerAnalytics = ({ user }) => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await axios.get('http://127.0.0.1:5000/api/stats/customer', {
-                    headers: { Authorization: `Bearer ${user.token}` }
-                });
+                const res = await api.get('/api/stats/customer');
                 setStats(res.data);
             } catch (err) { console.error(err); }
             finally { setLoading(false); }

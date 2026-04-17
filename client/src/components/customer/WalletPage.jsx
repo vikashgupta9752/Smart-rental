@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../../api/api';
 import {
     Wallet, Plus, ArrowUpRight, ArrowDownLeft,
     History, CreditCard, Loader2, TrendingUp, ShieldCheck,
@@ -22,9 +22,7 @@ const WalletPage = ({ user }) => {
     const fetchWallet = useCallback(async (showRefreshAnimation = false) => {
         if (showRefreshAnimation) setRefreshing(true);
         try {
-            const res = await axios.get('http://127.0.0.1:5000/api/stats/customer', {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const res = await api.get('/api/stats/customer');
             setBalance(res.data.wallet);
             setStats({ totalSpent: res.data.totalSpent || 0, totalBookings: res.data.totalBookings || 0 });
             const bookingTx = (res.data.bookings || []).map(b => ({
@@ -42,7 +40,7 @@ const WalletPage = ({ user }) => {
         if (!amount || amount <= 0) return;
         setAddingFunds(true);
         try {
-            const res = await axios.post('http://127.0.0.1:5000/api/wallet/add', { amount }, { headers: { Authorization: `Bearer ${user.token}` } });
+            const res = await api.post('/api/wallet/add', { amount });
             setBalance(res.data.wallet);
             setAddAmount(''); setShowAddFunds(false);
         } catch (err) { console.error(err); }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import {
     Search, Wallet, Calendar, Heart,
     Star, MapPin, TrendingUp, Sparkles,
@@ -15,9 +15,7 @@ const CustomerPanel = ({ user }) => {
 
     const fetchStats = useCallback(async () => {
         try {
-            const res = await axios.get('http://127.0.0.1:5000/api/stats/customer', {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
+            const res = await api.get('/api/stats/customer');
             setStats(res.data);
         } catch (err) { console.error(err); }
         finally { setLoading(false); }

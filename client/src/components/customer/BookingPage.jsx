@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/api';
 import {
     Calendar, Clock, CheckCircle2, ArrowRight, Loader2,
     ShieldCheck, Info, User, MapPin, Gauge,
@@ -19,7 +19,7 @@ const BookingPage = ({ user }) => {
     useEffect(() => {
         const fetchProperty = async () => {
             try {
-                const res = await axios.get(`http://127.0.0.1:5000/api/properties`);
+                const res = await api.get('/api/properties');
                 const prop = res.data.find(p => p._id === id);
                 setProperty(prop);
             } catch (err) {
@@ -36,9 +36,8 @@ const BookingPage = ({ user }) => {
         try {
             const startTs = new Date(bookingTime.start).getTime();
             const endTs = new Date(bookingTime.end).getTime();
-            await axios.post('http://127.0.0.1:5000/api/bookings',
-                { propertyId: id, start: startTs, end: endTs },
-                { headers: { Authorization: `Bearer ${user.token}` } }
+            await api.post('/api/bookings',
+                { propertyId: id, start: startTs, end: endTs }
             );
             setStep(4);
         } catch (err) {

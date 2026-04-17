@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import {
     ChevronLeft, Loader2, Camera, X, Plus,
@@ -104,7 +104,7 @@ const NewListing = ({ user }) => {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            await axios.post('http://127.0.0.1:5000/api/properties', {
+            await api.post('/api/properties', {
                 title: formData.title,
                 description: formData.description,
                 type: formData.type,
@@ -123,8 +123,6 @@ const NewListing = ({ user }) => {
                 maxGuests: formData.maxGuests,
                 amenities: formData.amenities,
                 images: formData.images.filter(url => url.trim()),
-            }, {
-                headers: { Authorization: `Bearer ${user.token}` }
             });
             setSuccess(true);
             setTimeout(() => navigate('/seller'), 2000);

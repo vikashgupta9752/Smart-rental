@@ -2,8 +2,7 @@ import axios from 'axios';
 
 // Get API URL from environment variables
 // In Vite, environment variables must start with VITE_
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
+const API_URL = import.meta.env.VITE_API_URL || 'https://smart-rental-1-dy1z.onrender.com';
 const api = axios.create({
     baseURL: API_URL,
     headers: {

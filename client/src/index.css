@@ -799,6 +799,7 @@ h4 {
     
     .sidebar-v2 {
         position: fixed;
+        top: auto !important;
         bottom: 0;
         left: 0;
         width: 100%;
@@ -810,6 +811,7 @@ h4 {
         border-top: 1px solid var(--card-border);
         padding: 0 10px;
         z-index: 1000;
+        background: var(--sidebar-bg);
     }
     .sidebar-v2.collapsed { width: 100%; }
     

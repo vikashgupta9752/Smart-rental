@@ -815,19 +815,53 @@ h4 {
     }
     .sidebar-v2.collapsed { width: 100%; }
     
-    .sidebar-brand, .sidebar-user-v2, .nav-group-title, .nav-group-divider, .sidebar-bottom, .sidebar-toggle-v2, .announcement-banner {
+    .sidebar-brand, .sidebar-user-v2, .nav-group-title, .nav-group-divider, .sidebar-toggle-v2, .announcement-banner {
         display: none !important;
     }
     
     .sidebar-scrollable {
+        flex: 1;
+        display: flex;
         flex-direction: row;
         overflow-x: auto;
         overflow-y: hidden;
         padding: 0;
         gap: 10px;
-        width: 100%;
         justify-content: space-around;
         align-items: center;
+    }
+    .sidebar-scrollable::-webkit-scrollbar { display: none; }
+    
+    .sidebar-bottom {
+        display: flex !important;
+        flex-direction: row;
+        border: none;
+        padding: 0;
+        margin: 0;
+        align-items: center;
+        justify-content: center;
+    }
+    .theme-toggle-v3 { display: none !important; }
+    
+    .logout-btn-v2, .login-link-v2 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 4px 8px;
+        gap: 4px;
+        font-size: 0.65rem;
+        background: transparent !important;
+        border: none !important;
+        color: var(--text-muted);
+        box-shadow: none !important;
+    }
+    .logout-btn-v2:hover, .login-link-v2:hover {
+        color: var(--danger);
+        transform: none;
+    }
+    .logout-btn-v2 span, .login-link-v2 span {
+        display: block !important;
     }
     .sidebar-scrollable::-webkit-scrollbar { display: none; }
     

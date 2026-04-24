@@ -4,7 +4,7 @@ const Property = require('../models/Property');
 const Graph = require('../dsa/Graph');
 const Pathfinding = require('../dsa/Pathfinding');
 const Booking = require('../models/Booking');
-const { protect, authorize } = require('../middleware/auth');
+const { protect, optionalProtect, authorize } = require('../middleware/auth');
 
 // Build Graph from DB
 const buildGraph = async () => {
@@ -44,7 +44,7 @@ router.post('/path', protect, async (req, res) => {
 });
 
 // GET all properties with filters
-router.get('/', async (req, res) => {
+router.get('/', optionalProtect, async (req, res) => {
     try {
         const { type, minPrice, maxPrice, minRating, amenities, guests, location, sort } = req.query;
         const filter = {};
